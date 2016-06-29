@@ -27,13 +27,12 @@ app.use(function(req, res, next){
   next();
 });
 
-//app.use('/', routes);
 //app.use('/users', users);
-//app.use(routes);
-app.get('/', routes.index);
-app.get('/flight/:number', routes.flight);
-app.put('/flight/:number/arrived', routes.arrived);
-app.get('/list', routes.list);
+
+app.route('/').get(routes.index);
+app.route('/flight/:number').get(routes.flight);
+app.route('/flight/:number/arrived').put(routes.arrived);
+app.route('/list').get(routes.list);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
