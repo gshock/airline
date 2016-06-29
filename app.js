@@ -22,12 +22,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req, res, next){
+  res.set('X-Powered-By', 'Flight Tracker');  
+  next();
+});
+
 //app.use('/', routes);
 //app.use('/users', users);
 //app.use(routes);
 app.get('/', routes.index);
 app.get('/flight/:number', routes.flight);
 app.put('/flight/:number/arrived', routes.arrived);
+app.get('/list', routes.list);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
