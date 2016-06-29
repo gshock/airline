@@ -25,17 +25,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 //app.use('/', routes);
 //app.use('/users', users);
 //app.use(routes);
-//app.use(routes.flight1);
 app.get('/', routes.index);
-app.get('/flight1', routes.flight1);
-app.get('/flight2', routes.flight2);
-
-/*
-app.use('/posts/:slug', function(req, res, next) {
-  req.db.findPostBySlug(req.params.slug, function(post){
-  ...
-  })
-})*/
+app.get('/flight/:number', routes.flight);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
