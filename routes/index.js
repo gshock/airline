@@ -80,10 +80,10 @@ module.exports = function (flightsData) {
   };
 
   functions.user = function(req, res){
-    if(req.session.passport.user){
-        res.render('user', {title:'Welcome', user: req.user});
-    }else{
+    if(req.session.passport.user === undefined){
         res.redirect('/login');
+    }else{
+        res.render('user', {title:'Welcome', user: req.user});
     };
   };
 
