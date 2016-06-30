@@ -36,6 +36,7 @@ module.exports = function (flights) {
   app.route('/flight/:number').get(routes.flight);
   app.route('/flight/:number/arrived').put(routes.arrived);
   app.route('/list').get(routes.list);
+  app.route('/arrivals').get(routes.arrivals);
 
   // catch 404 and forward to error handler
   app.use(function (req, res, next) {
