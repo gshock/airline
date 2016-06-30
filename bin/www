@@ -9,7 +9,7 @@ var debug = require('debug')('airline:server');
 var http = require('http'),
     flightsData = require('../data'), 
     db = require('../db.js'),
-    app = require('../app');
+    app = require('../app')(flightsData);
 
 /**
  * Get port from environment and store in Express.
@@ -22,7 +22,7 @@ var port = normalizePort(process.env.PORT || '3000');
  * Create HTTP server.
  */
 
-var server = http.createServer(app(flightsData));
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
