@@ -1,40 +1,51 @@
 //http://webapplog.com/migrating-express-js-3-x-to-4-x-middleware-route-and-other-changes/
 
-var flights = require('../data');
-var flight = require('../flight');
+module.exports = function (flightsData) {
 
-for (var number in flights) {
-  flights[number] = flight(flights[number]);
-};
+  var flights = flightsData; 
 
-exports.flight = function(req, res){
-  var number = req.params.number;
-
-  if (typeof flights[number] === 'undefined')  {
-    res.status(404).json({status:'error'});
-  }else{
-    res.json(flights[number].getInformation());
+  //TODO: can remove this later?
+  if(flights === 'undefined'){
+    flights = require('../data')
   }
-};
 
-exports.arrived = function(req, res){
-  var number = req.params.number;
+  var flight = require('../flight');
 
-  if (typeof flights[number] === 'undefined')  {
-    res.status(404).json({status:'error'});
-  }else{
-    flights[number].triggerArrive();
-    res.json({status: 'done'});
+  for (var number in flights) {
+    flights[number] = flight(flights[number]);
+  };
+
+  var functions = {};
+
+  functions.flight = function (req, res) {
+    var number = req.params.number;
+
+    if (typeof flights[number] === 'undefined') {
+      res.status(404).json({ status: 'error' });
+    } else {
+      res.json(flights[number].getInformation());
+    }
+  };
+
+  functions.arrived = function (req, res) {
+    var number = req.params.number;
+
+    if (typeof flights[number] === 'undefined') {
+      res.status(404).json({ status: 'error' });
+    } else {
+      flights[number].triggerArrive();
+      res.json({ status: 'done' });
+    }
+  };
+
+  functions.list = function (req, res) {
+    res.render('list', { title: 'All Flights', flights: flights });
   }
-};
 
-exports.list = function(req, res){
-  res.render('list', {title: 'All Flights', flights: flights});
+  functions.index = function (req, res) {
+    res.render('index', { title: 'Flight System' });
+  };
+
+  return functions; 
 }
-
-exports.index = function(req, res){
-  res.render('index', { title: 'Express'}); 
-};
-
-
 
