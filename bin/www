@@ -9,7 +9,7 @@ var debug = require('debug')('airline:server');
 var http = require('http'),
     flightsData = require('../data'), 
     db = require('../db.js'),
-    app = require('../app')(flightsData);
+    app = require('../app')(flightsData, db);
 
 /**
  * Get port from environment and store in Express.

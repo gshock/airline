@@ -1,10 +1,12 @@
-module.exports = function (flights) {
+module.exports = function (flights, db) {
 
   var express = require('express');
   var path = require('path');
   var favicon = require('serve-favicon');
   var logger = require('morgan');
   var cookieParser = require('cookie-parser');
+  var expressSession = require('express-session');
+  var MongoStore = require('connect-mongo')(expressSession);
   var bodyParser = require('body-parser');
 
   //var flights = require('./data');
@@ -23,6 +25,14 @@ module.exports = function (flights) {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cookieParser());
+
+  app.use(expressSession({
+    secret: 'topsecret',
+    store: new MongoStore({mongooseConnection: db }),
+    resave: false,
+    saveUninitialized: true
+  }));
+
   app.use(express.static(path.join(__dirname, 'public')));
 
   app.use(function (req, res, next) {
