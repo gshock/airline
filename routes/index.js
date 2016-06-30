@@ -1,6 +1,24 @@
 //http://webapplog.com/migrating-express-js-3-x-to-4-x-middleware-route-and-other-changes/
 
 var FlightSchema = require('../schema/flight');
+var Emitter = require('events').EventEmitter;
+var flightEmitter = new Emitter();
+
+flightEmitter.on('arrival', function (f) {
+  var record = new FlightSchema(
+    f.getInformation()
+  );
+
+  record.save(function (err) {
+    if (err) {
+      console.log(err);
+    } 
+  });
+});
+
+flightEmitter.on('arrival', function (f) {
+  console.log('flight arrived: ' + f.data.number);
+});
 
 module.exports = function (flightsData) {
 
@@ -36,18 +54,10 @@ module.exports = function (flightsData) {
     if (typeof flights[number] === 'undefined') {
       res.status(404).json({ status: 'error' });
     } else {
+      // arrived
       flights[number].triggerArrive();
-
-      var record = new FlightSchema(flights[number].getInformation());
-      record.save(function (err) {
-        if (err) {
-          console.log(err);
-          res.status(500).json({ status: 'failure' });
-        } else {
-          res.json({ status: 'success' });
-        };
-      });
-
+      flightEmitter.emit('arrival', flights[number]);
+      res.json({ status: 'success' });
     }
   };
 
@@ -75,15 +85,15 @@ module.exports = function (flightsData) {
       });
   };
 
-  functions.login = function(req, res){
-    res.render('Login', {title: 'Login'});
+  functions.login = function (req, res) {
+    res.render('Login', { title: 'Login' });
   };
 
-  functions.user = function(req, res){
-    if(req.session.passport.user === undefined){
-        res.redirect('/login');
-    }else{
-        res.render('user', {title:'Welcome', user: req.user});
+  functions.user = function (req, res) {
+    if (req.session.passport.user === undefined) {
+      res.redirect('/login');
+    } else {
+      res.render('user', { title: 'Welcome', user: req.user });
     };
   };
 
