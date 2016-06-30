@@ -7,6 +7,7 @@ module.exports = function (flights, db) {
   var cookieParser = require('cookie-parser');
   var expressSession = require('express-session');
   var MongoStore = require('connect-mongo')(expressSession);
+  var passport = require('./auth');
   var bodyParser = require('body-parser');
 
   //var flights = require('./data');
@@ -22,8 +23,7 @@ module.exports = function (flights, db) {
   // uncomment after placing your favicon in /public
   //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
   app.use(logger('dev'));
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: false }));
+  
   app.use(cookieParser());
 
   app.use(expressSession({
@@ -33,6 +33,11 @@ module.exports = function (flights, db) {
     saveUninitialized: true
   }));
 
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
   app.use(express.static(path.join(__dirname, 'public')));
 
   app.use(function (req, res, next) {
@@ -47,6 +52,13 @@ module.exports = function (flights, db) {
   app.route('/flight/:number/arrived').put(routes.arrived);
   app.route('/list').get(routes.list);
   app.route('/arrivals').get(routes.arrivals);
+
+  app.route('/login').get(routes.login);
+  app.route('/login').post(passport.authenticate('local', {
+    failureRedirect: '/login',
+    successRedirect: '/user'
+  }));
+  app.route('/user').get(routes.user);
 
   // catch 404 and forward to error handler
   app.use(function (req, res, next) {

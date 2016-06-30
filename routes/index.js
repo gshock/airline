@@ -75,6 +75,18 @@ module.exports = function (flightsData) {
       });
   };
 
+  functions.login = function(req, res){
+    res.render('Login', {title: 'Login'});
+  };
+
+  functions.user = function(req, res){
+    if(req.session.passport.user){
+        res.render('user', {title:'Welcome', user: req.user});
+    }else{
+        res.redirect('/login');
+    };
+  };
+
   return functions;
 }
 
