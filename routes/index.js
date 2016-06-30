@@ -1,11 +1,13 @@
 //http://webapplog.com/migrating-express-js-3-x-to-4-x-middleware-route-and-other-changes/
 
+var FlightSchema = require('../schema/flight');
+
 module.exports = function (flightsData) {
 
-  var flights = flightsData; 
+  var flights = flightsData;
 
   //TODO: can remove this later?
-  if(flights === 'undefined'){
+  if (flights === 'undefined') {
     flights = require('../data')
   }
 
@@ -34,7 +36,17 @@ module.exports = function (flightsData) {
       res.status(404).json({ status: 'error' });
     } else {
       flights[number].triggerArrive();
-      res.json({ status: 'done' });
+
+      var record = new FlightSchema(flights[number].getInformation());
+      record.save(function (err) {
+        if (err) {
+          console.log(err);
+          res.status(500).json({ status: 'failure' });
+        } else {
+          res.json({ status: 'success' });
+        };
+      });
+
     }
   };
 
@@ -46,6 +58,6 @@ module.exports = function (flightsData) {
     res.render('index', { title: 'Flight System' });
   };
 
-  return functions; 
+  return functions;
 }
 
