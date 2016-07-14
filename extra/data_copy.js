@@ -1,0 +1,16 @@
+module.exports = {
+    "1": {
+        number: 1,
+        origin: 'LAX',
+        destination: 'DCA',
+        departs: '9AM',
+        arrives: '4PM'
+    },
+    "2": {
+        number: 2,
+        origin: 'LAX',
+        destination: 'DCA',
+        departs: '9AM',
+        arrives: '4PM'
+    }
+}
